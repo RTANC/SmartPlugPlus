@@ -1,0 +1,118 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <title>Shop</title>
+    <style>
+        #app {
+            background-attachment: local;
+            background-image: url('https://raw.githubusercontent.com/RTANC/background/master/stockvault-geometric-material-design-background241062.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+
+
+
+<body>
+    <div id="app">
+        <v-app>
+            <v-app-bar app dark>
+                <v-toolbar-title class="headline text-uppercase">
+                    <span class="font-weight-light">Shop</span>
+                </v-toolbar-title>
+            </v-app-bar>
+            <v-content>
+                <v-container grid-list-md fluid>
+                    <v-layout row wrap>
+                        <v-flex xs3>
+                            <v-card>
+                                <v-card-title primary-title>
+                                    โต๊ะ 1
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-container grid-list-md>
+                                        <v-layout row wrap>
+                                            <v-flex xs12>
+                                                <p class="font-weight-bold display-3">{{current[0]}} Amp.</p>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-form>
+                                                    <v-text-field label="Limit" v-model="limit[0]" type="number">
+                                                    </v-text-field>
+                                                </v-form>
+                                            </v-flex>
+                                        </v-layout>
+                                    </v-container>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="primary" @click="setLimit">Set</v-btn>
+                                    <v-btn color="secondary">Clear</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-flex>
+                    </v-layout>
+                </v-container>
+            </v-content>
+        </v-app>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-apexcharts"></script>
+    <script src="https://cdn.netpie.io/microgear.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            vuetify: new Vuetify(),
+            data() {
+                return {
+                    current: [0],
+                    limit: [0],
+                    microgear: null
+                }
+            },
+            methods: {
+                connectToNETPIE() {
+                    const APPID = "SmartPlugPlus"
+                    const KEY = "klJcwfv6dWPsPY6"
+                    const SECRET = "jjWF26tLmrh3n5rF6YSLzWz5o"
+
+                    const ALIAS = "Web_controller_00"
+
+                    this.microgear = Microgear.create({
+                        key: KEY,
+                        secret: SECRET,
+                        alias: ALIAS
+                    });
+
+                    // this.microgear.on('connected', function () {
+                    //     this.microgear.setAlias(ALIAS)
+                    // })
+                    
+                    this.microgear.on('message', function (topic, msg) {});
+
+                    this.microgear.connect(APPID)
+                    this.microgear.subscribe("/Shop")
+                },
+                setLimit() {
+                    this.microgear.chat('plug01',this.limit[0])
+                }
+            },
+            created() {
+                this.connectToNETPIE()
+            }
+        })
+    </script>
+</body>
+
+</html>
