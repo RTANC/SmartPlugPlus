@@ -32,7 +32,7 @@
             <v-content>
                 <v-container grid-list-md fluid>
                     <v-layout row wrap>
-                        <v-flex xs3>
+                        <v-flex xs12 md3 lg3>
                             <v-card>
                                 <v-card-title primary-title>
                                     โต๊ะ 1
@@ -41,13 +41,13 @@
                                     <v-container grid-list-md>
                                         <v-layout row wrap>
                                             <v-flex xs12>
-                                                <p class="font-weight-bold display-3">{{current[0]}} Amp.</p>
+                                                <p class="font-weight-bold display-3">{{current[0]}} kWh.</p>
                                             </v-flex>
                                             <v-flex xs12>
-                                                <v-form>
-                                                    <v-text-field label="Limit" v-model="limit[0]" type="number">
-                                                    </v-text-field>
-                                                </v-form>
+                                                <p class="font-weight-bold title">Limit: {{limit[0]}}</p>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-select v-model="orders[0]" :items="foods" label="รายการเครื่องดื่ม/ขนม" multiple chips deletable-chips outlined></v-select>
                                             </v-flex>
                                         </v-layout>
                                     </v-container>
@@ -55,7 +55,7 @@
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
                                     <v-btn color="primary" @click="setLimit">Set</v-btn>
-                                    <v-btn color="secondary">Clear</v-btn>
+                                    <v-btn color="secondary" @click="clear">Clear</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-flex>
@@ -78,7 +78,9 @@
                 return {
                     current: [0],
                     limit: [0],
-                    microgear: null
+                    microgear: null,
+                    orders: [[]],
+                    foods: ['Espresso','Cappuccino','Latte','Mocha','Americano','White coffee']
                 }
             },
             methods: {
@@ -98,14 +100,17 @@
                     // this.microgear.on('connected', function () {
                     //     this.microgear.setAlias(ALIAS)
                     // })
-                    
-                    this.microgear.on('message', function (topic, msg) {});
+
+                    this.microgear.on('message', function (topic, msg) { });
 
                     this.microgear.connect(APPID)
                     this.microgear.subscribe("/Shop")
                 },
                 setLimit() {
-                    this.microgear.chat('plug01',this.limit[0])
+                    this.microgear.chat('plug01', this.limit[0])
+                },
+                clear () {
+                    console.log(this.orders[0])
                 }
             },
             created() {
