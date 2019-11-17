@@ -152,7 +152,9 @@
                     this.microgear.subscribe("/Shop")
                 },
                 setLimit() {
+                    let command = this.limit[0] + ';' + this.price[0]
                     this.microgear.chat('plug01', this.limit[0])
+                    console.log(command)
                 },
                 clear() {
                     this.selected = []
