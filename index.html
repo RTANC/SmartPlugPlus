@@ -32,7 +32,7 @@
             <v-content>
                 <v-container grid-list-md fluid>
                     <v-layout row wrap>
-                        <v-flex xs12 md3 lg3>
+                        <v-flex xs12 sm12 md4 lg4>
                             <v-card>
                                 <v-card-title primary-title>
                                     โต๊ะ 1
@@ -47,7 +47,13 @@
                                                 <p class="font-weight-bold title">Limit: {{limit[0]}}</p>
                                             </v-flex>
                                             <v-flex xs12>
-                                                <v-select v-model="orders[0]" :items="foods" label="รายการเครื่องดื่ม/ขนม" multiple chips deletable-chips outlined></v-select>
+                                                <p class="font-weight-bold title">Price: {{price[0]}}</p>
+                                            </v-flex>
+                                            <v-flex xs12>
+                                                <v-data-table v-model="selected" :headers="headers" :items="desserts"
+                                                    show-select item-key="name" class="elevation-1" :items-per-page="5"
+                                                    height="300">
+                                                </v-data-table>
                                             </v-flex>
                                         </v-layout>
                                     </v-container>
@@ -78,9 +84,48 @@
                 return {
                     current: [0],
                     limit: [0],
+                    price: [0],
                     microgear: null,
-                    orders: [[]],
-                    foods: ['Espresso','Cappuccino','Latte','Mocha','Americano','White coffee']
+                    selected: [],
+                    headers: [
+                        {
+                            text: 'Dessert',
+                            align: 'left',
+                            sortable: false,
+                            value: 'name',
+                        },
+                        { text: 'Price', sortable: false, value: 'price' },
+                        { text: 'Bonus', sortable: false, value: 'bonus' }
+                    ],
+                    desserts: [
+                        {
+                            name: 'Expresso',
+                            price: 59,
+                            bonus: 10
+                        },
+                        {
+                            name: 'Capucino',
+                            price: 59,
+                            bonus: 10
+                        }, {
+                            name: 'Americano',
+                            price: 59,
+                            bonus: 10
+                        }, {
+                            name: 'Chocolate Cake',
+                            price: 59,
+                            bonus: 10
+                        }, {
+                            name: 'Milk Cake',
+                            price: 59,
+                            bonus: 10
+                        }
+                        , {
+                            name: 'Valila Cake',
+                            price: 59,
+                            bonus: 10
+                        }
+                    ]
                 }
             },
             methods: {
@@ -109,8 +154,18 @@
                 setLimit() {
                     this.microgear.chat('plug01', this.limit[0])
                 },
-                clear () {
-                    console.log(this.orders[0])
+                clear() {
+                    this.selected = []
+                }
+            },
+            watch: {
+                selected(val) {
+                    this.limit[0] = val.reduce((sum, number) => {
+                        return sum + number.bonus
+                    }, 0)
+                    this.price[0] = val.reduce((sum, number) => {
+                        return sum + number.price
+                    }, 0)
                 }
             },
             created() {
